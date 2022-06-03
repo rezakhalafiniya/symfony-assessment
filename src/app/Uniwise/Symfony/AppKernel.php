@@ -6,6 +6,7 @@ use JMS\AopBundle\JMSAopBundle;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\MakerBundle\MakerBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
@@ -47,12 +48,13 @@ class AppKernel extends Kernel
             new SecurityBundle(),
             new ApiBundle(),
             new JMSAopBundle(),
-            new DebugBundle()
+            new DebugBundle(),
+            new MakerBundle(),
         );
 
         return $bundles;
     }
-    
+
     /**
      * Loads the container configuration.
      *

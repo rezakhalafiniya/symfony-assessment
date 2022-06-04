@@ -39,7 +39,7 @@ class Car {
     private $gasEconomy;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Uniwise\Doctrine\Entity\Accessory", mappedBy="car")
+     * @ORM\ManyToMany(targetEntity="Uniwise\Doctrine\Entity\Accessory", mappedBy="cars")
      */
     private $accessories;
 

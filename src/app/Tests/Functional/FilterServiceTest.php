@@ -4,6 +4,7 @@ namespace Tests\Functional;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Uniwise\Symfony\Exceptions\BadParamException;
 use Uniwise\Doctrine\Entity\Accessory;
 use Uniwise\Doctrine\Entity\Car;
 use Uniwise\Symfony\Service\FilterService;
@@ -58,6 +59,57 @@ class FilterServiceTest extends KernelTestCase
             'rel.accessory' => $accessory,
         ];
         $filteredEntities = $this->createEntityArray(Car::class, $carParams, 3);
+
+        $filteredEntitiesActual = $this->filterService->filter($entity, $params);
+
+        $this->assertEquals($filteredEntities, $filteredEntitiesActual);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_Exception_when_bad_params_are_given()
+    {
+        $this->expectException(BadParamException::class);
+
+        $entity = Car::class;
+        $params = [
+            'abrand' => 'BMW'
+        ];
+
+        $this->filterService->filter($entity, $params);
+    }
+
+    /**
+     * @test
+     */
+    public function it_filters_entity_based_on_relationship()
+    {
+        $entity = Car::class;
+        $params = [
+            'rel.accessories|name' => 'gps',
+            'brand' => 'BMW'
+        ];
+        $accessory = new Accessory();
+        $accessory->setName('gps');
+        $accessory2 = new Accessory();
+        $accessory2->setName('radio');
+        $carParams = [
+            'brand' => 'BMW',
+            'color' => 'blue',
+            'model' => 'M3',
+            'gasEconomy' =>'pertrol',
+            'rel.accessory' => $accessory,
+        ];
+        $carParams2 = [
+            'brand' => 'BMW',
+            'color' => 'blue',
+            'model' => 'M3',
+            'gasEconomy' =>'pertrol',
+            'rel.accessory' => $accessory2,
+        ];
+        $filteredEntities = $this->createEntityArray(Car::class,$carParams,3);
+        $unfilteredEntities = $this->createEntityArray(Car::class,$carParams2,3);
 
         $filteredEntitiesActual = $this->filterService->filter($entity, $params);
 

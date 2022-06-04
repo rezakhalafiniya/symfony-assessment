@@ -19,12 +19,6 @@ class Car {
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40)
-     * @var string
-     */
-    private $make;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $brand;

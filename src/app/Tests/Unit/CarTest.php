@@ -1,5 +1,5 @@
 <?php
-
+namespace Tests\Unit;
 
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Uniwise\Doctrine\Entity\Accessory;

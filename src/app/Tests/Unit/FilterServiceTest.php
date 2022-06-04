@@ -1,7 +1,11 @@
 <?php
 
+namespace Tests\Unit;
 
+use Tests\Unit\Mock\MockEntity;
+use Tests\Unit\Mock\MockRepository;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use Uniwise\Symfony\Service\FilterService;
 
 class FilterServiceTest extends TestCase
 {

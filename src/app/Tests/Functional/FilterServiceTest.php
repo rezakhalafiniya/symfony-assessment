@@ -62,7 +62,33 @@ class FilterServiceTest extends KernelTestCase
 
         $filteredEntitiesActual = $this->filterService->filter($entity, $params);
 
-        $this->assertEquals($filteredEntities, $filteredEntitiesActual);
+        $this->assertEquals($filteredEntities, $filteredEntitiesActual,'Filtering based on params didn\'t work');
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_empty_when_params_do_not_match()
+    {
+        $entity = Car::class;
+        $params = [
+            'brand' => 'BMW',
+            'model' => 'M1'
+        ];
+        $accessory = new Accessory();
+        $accessory->setName('gps');
+        $carParams = [
+            'brand' => 'BMW',
+            'color' => 'blue',
+            'model' => 'M3',
+            'gasEconomy' => 'pertrol',
+            'rel.accessory' => $accessory,
+        ];
+        $this->createEntityArray(Car::class, $carParams, 3);
+
+        $filteredEntitiesActual = $this->filterService->filter($entity, $params);
+
+        $this->assertEquals([], $filteredEntitiesActual,'Filtering based on params didn\'t work');
     }
 
     /**
@@ -102,18 +128,27 @@ class FilterServiceTest extends KernelTestCase
             'rel.accessory' => $accessory,
         ];
         $carParams2 = [
-            'brand' => 'BMW',
+            'brand' => 'aaBMW',
             'color' => 'blue',
             'model' => 'M3',
             'gasEconomy' =>'pertrol',
             'rel.accessory' => $accessory2,
         ];
-        $filteredEntities = $this->createEntityArray(Car::class,$carParams,3);
-        $unfilteredEntities = $this->createEntityArray(Car::class,$carParams2,3);
+        $carParams3 = [
+            'brand' => 'BMW',
+            'color' => 'blue',
+            'model' => 'M3',
+            'gasEconomy' =>'pertrol',
+            'rel.accessory' => $accessory,
+        ];
+        $filteredEntities = $this->createEntityArray(Car::class,$carParams);
+        // Adding more to check if the filter is only returning the filtered cars
+        $this->createEntityArray(Car::class,$carParams2);
+        $this->createEntityArray(Car::class,$carParams3);
 
         $filteredEntitiesActual = $this->filterService->filter($entity, $params);
 
-        $this->assertEquals($filteredEntities, $filteredEntitiesActual);
+        $this->assertEquals($filteredEntities, $filteredEntitiesActual,'Filtering based on relationship didn\'t work');
     }
 
     /**

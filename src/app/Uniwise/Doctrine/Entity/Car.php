@@ -1,6 +1,8 @@
 <?php
 namespace Uniwise\Doctrine\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,6 +43,16 @@ class Car {
      * @ORM\Column(type="string", length=255)
      */
     private $gasEconomy;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Uniwise\Doctrine\Entity\Accessory", mappedBy="car")
+     */
+    private $accessories;
+
+    public function __construct()
+    {
+        $this->accessories = new ArrayCollection();
+    }
 
     public function getBrand(): ?string
     {
@@ -86,6 +98,34 @@ class Car {
     public function setGasEconomy(string $gasEconomy): self
     {
         $this->gasEconomy = $gasEconomy;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Accessory[]
+     */
+    public function getAccessories(): Collection
+    {
+        return $this->accessories;
+    }
+
+    public function addAccessory(Accessory $accessory): self
+    {
+        if (!$this->accessories->contains($accessory)) {
+            $this->accessories[] = $accessory;
+            $accessory->addCar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAccessory(Accessory $accessory): self
+    {
+        if ($this->accessories->contains($accessory)) {
+            $this->accessories->removeElement($accessory);
+            $accessory->removeCar($this);
+        }
 
         return $this;
     }

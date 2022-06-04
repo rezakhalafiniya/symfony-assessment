@@ -2,6 +2,7 @@
 
 
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use Uniwise\Doctrine\Entity\Accessory;
 use Uniwise\Doctrine\Entity\Car;
 
 class CarTest extends TestCase
@@ -59,7 +60,8 @@ class CarTest extends TestCase
      */
     public function car_sets_and_gets_accessory()
     {
-        $this->car->setAccesorry(new Accessory());
-        $this->assertEquals('BMW',$this->car->getAccesorry(),'Accessory is not set and get correctly');
+        $accessory = new Accessory();
+        $this->car->addAccessory($accessory);
+        $this->assertEquals([$accessory],$this->car->getAccessories()->toArray(),'Accessory is not set and get correctly');
     }
 }

@@ -48,6 +48,11 @@ class Car {
         $this->accessories = new ArrayCollection();
     }
 
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
     public function getBrand(): ?string
     {
         return $this->brand;

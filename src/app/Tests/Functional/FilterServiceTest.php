@@ -139,7 +139,7 @@ class FilterServiceTest extends KernelTestCase
             'color' => 'blue',
             'model' => 'M3',
             'gasEconomy' =>'pertrol',
-            'rel.accessory' => $accessory,
+            'rel.accessory' => $accessory2,
         ];
         $filteredEntities = $this->createEntityArray(Car::class,$carParams);
         // Adding more to check if the filter is only returning the filtered cars
@@ -167,7 +167,6 @@ class FilterServiceTest extends KernelTestCase
             foreach ($params as $property => $value) {
                 if (strpos($property, 'rel.') === 0) {
                     $methodName = 'add' . ucfirst(str_replace('rel.', '', $property));
-                    $this->entityManager->merge($value);
                     $this->entityManager->persist($value);
                 } else {
                     $methodName = 'set' . ucfirst($property);

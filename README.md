@@ -1,3 +1,14 @@
+# Filterable API Endpoint : 
+The filter service is flexible and can work with different entities.
+For demonstration, in the car controller, the Entity class comes from the get query, even though it would make more sense to use the entity inside the controller.
+
+## Syntax in get Query: 
+[EntityClassName in dot notation format];[own property]=[value],rel.[relation property]|[relationPropertyName]=[value]
+
+**Example FilterBy Query :** Uniwise.Doctrine.Entity.Car;brand=BMW,rel.accessories|name=gps
+**Example OrderBy Query:** rel.accessories|id=DESC
+
+
 # Assignment
 
 The assignment is intended to assist us in assessing your abilities to design solid architectures and write the code to support these.

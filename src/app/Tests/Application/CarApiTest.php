@@ -5,6 +5,7 @@ namespace Tests\Application;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Uniwise\Doctrine\Entity\Car;
+use Uniwise\Symfony\Service\CarSerializer;
 
 class CarApiTest extends WebTestCase
 {
@@ -31,7 +32,7 @@ class CarApiTest extends WebTestCase
             ->getManager();
 
         $this->serializer = $kernel->getContainer()
-            ->get(CustomSerializer::class);
+            ->get(CarSerializer::class);
 
         $this->client = static::createClient();
 

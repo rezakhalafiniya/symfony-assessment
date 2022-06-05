@@ -16,6 +16,7 @@ framework:
     handler_id: ~
 
   ide: sublime
+  test: true
 
 sensio_framework_extra:
   request: { converters: true }

@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Uniwise\Doctrine\Entity\Car;
 use Uniwise\Symfony\Service\CarSerializer;
+use Uniwise\Symfony\Service\FilterService;
 
 class CarApiTest extends WebTestCase
 {
@@ -19,20 +20,29 @@ class CarApiTest extends WebTestCase
      */
     private $client;
     /**
-     * @var object
+     * @var CarSerializer
      */
     private $serializer;
 
+    /**
+     * @var FilterService
+     */
+    private $filterService;
+
+    /**
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface|null
+     */
     public function setUp(): void
     {
         $kernel = self::bootKernel();
+        $container = $kernel->getContainer();
 
-        $this->entityManager = $kernel->getContainer()
-            ->get('doctrine')
+        $this->entityManager = $container->get('doctrine')
             ->getManager();
 
-        $this->serializer = $kernel->getContainer()
-            ->get(CarSerializer::class);
+        $this->serializer = $container->get(CarSerializer::class);
+
+        $this->filterService = $container->get(FilterService::class);
 
         $this->client = static::createClient();
 
@@ -57,7 +67,7 @@ class CarApiTest extends WebTestCase
     /**
      * @test
      */
-    public function api_returns_json()
+    public function car_api_endpoint_returns_json()
     {
         $this->client->request('GET','/car');
 
@@ -68,11 +78,31 @@ class CarApiTest extends WebTestCase
     /**
      * @test
      */
-    public function api_returns_all_cars()
+    public function car_api_endpoint_returns_all_cars()
     {
         $cars = $this->entityManager->getRepository(Car::class)->findAll();
         $serializedCars = $this->serializer->serialize($cars);
         $this->client->request('GET','/car');
+        $this->assertEquals($serializedCars,$this->client->getResponse()->getContent(),'Returned Json doesn\'t match DB');
+    }
+
+    /**
+     * @test
+     */
+    public function car_api_endpoint_returns_filtered_cars()
+    {
+        $entityDotNotationName = str_replace('\\','.',Car::class);
+        $filterParams = [
+            'brand' => 'BMW',
+            'rel.accessories|name' => 'gps'
+        ];
+        $filterQuery = $entityDotNotationName.';'.http_build_query($filterParams,'',',');
+
+        $cars = $this->filterService->filter(Car::class,$filterParams);
+        $serializedCars = $this->serializer->serialize($cars);
+
+        $this->client->request('GET','/car/filter/'.$filterQuery);
+
         $this->assertEquals($serializedCars,$this->client->getResponse()->getContent(),'Returned Json doesn\'t match DB');
     }
 }
